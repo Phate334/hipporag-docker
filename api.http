@@ -1,0 +1,29 @@
+@host=http://localhost:4001
+
+### list models
+GET {{host}}/v1/models HTTP/1.1
+
+### health
+GET {{host}}/health HTTP/1.1
+
+### chat completions
+POST {{host}}/v1/chat/completions HTTP/1.1
+
+{
+    "model": "gemma-3-1b",
+    "messages": [
+        {
+            "role": "user",
+            "content": "How many legs does a spider have?"
+        }
+    ],
+    "max_tokens": 100
+}
+
+### embedding
+POST {{host}}/v1/embeddings HTTP/1.1
+
+{
+    "model": "nomic-v2-text-embedding",
+    "input": "How many legs does a spider have?"
+}

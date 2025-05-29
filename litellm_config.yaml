@@ -1,0 +1,13 @@
+model_list:
+  - model_name: gemma-3-1b
+    litellm_params:
+      model: openai/gemma-3-1b
+      api_base: http://llm:8080/v1
+      api_key: sk-template
+  - model_name: nomic-v2-text-embedding  # let hipporag use openai embedding model
+    litellm_params:
+      model: openai/nomic-v2
+      api_base: http://embed:8080/v1
+      api_key: sk-template
+    model_info:
+      mode: embedding
