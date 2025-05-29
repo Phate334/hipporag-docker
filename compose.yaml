@@ -9,14 +9,15 @@ services:
   llm:
     image: ghcr.io/ggml-org/llama.cpp:server-b5517
     volumes:
-      - ./models:/models
+      - ./models:/root/.cache/llama.cpp
     ports:
       - "8080:8080"
     expose:
       - 8080
     init: true
     environment:
-      - LLAMA_ARG_MODEL=/models/google_gemma-3-1b-it-qat-Q4_K_M.gguf
+      # - LLAMA_ARG_MODEL=/models/google_gemma-3-1b-it-qat-Q4_K_M.gguf
+      - LLAMA_ARG_HF_REPO=bartowski/google_gemma-3-1b-it-qat-GGUF:Q4_K_M
       - LLAMA_ARG_CTX_SIZE=4096
       - LLAMA_ARG_CACHE_REUSE=256
       - LLAMA_ARG_JINJA=1
@@ -24,19 +25,25 @@ services:
   embed:
     image: ghcr.io/ggml-org/llama.cpp:server-b5517
     volumes:
-      - ./models:/models
+      - ./models:/root/.cache/llama.cpp
     ports:
       - "8081:8080"
     expose:
       - 8080
     init: true
     environment:
-      - LLAMA_ARG_MODEL=/models/nomic-embed-text-v2-moe.f16.gguf
+      # - LLAMA_ARG_MODEL=/models/nomic-embed-text-v2-moe.f16.gguf
+      - LLAMA_ARG_HF_REPO=nomic-ai/nomic-embed-text-v2-moe-GGUF:F16
       - LLAMA_ARG_EMBEDDINGS=1
       - LLAMA_ARG_UBATCH=1024
+      - LLAMA_ARG_JINJA=1
     # command: ["--log-disable"]
   app:
+    image: hipporag:2.0.0a3
     build: .
+    depends_on:
+      - llm
+      - embed
     environment:
       - OPENAI_BASE_URL=http://litellm:4000/v1
       - OPENAI_API_KEY=sk-template
