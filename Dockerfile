@@ -13,5 +13,6 @@ FROM python:3.12-slim-bookworm
 COPY --from=builder --chown=app:app /app /app
 
 ENV PATH="/app/.venv/bin:$PATH"
+WORKDIR /app
 
 ENTRYPOINT ["/app/.venv/bin/python"]

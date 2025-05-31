@@ -60,4 +60,4 @@ services:
     volumes:
       - ./outputs:/app/outputs
       - ./demo_local.py:/app/demo_local.py
-    command: ["/app/demo_local.py"]
+    command: ["demo_local.py"]
