@@ -13,6 +13,11 @@ on:
       - master
   workflow_dispatch:
 
+# Prevent concurrent builds to avoid disk space conflicts
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
@@ -27,6 +32,32 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Check disk space before build
+        run: |
+          echo "Disk space before build:"
+          df -h
+          echo "Docker system info:"
+          docker system df
+
+      - name: Free up disk space
+        run: |
+          # Remove unnecessary packages and clean package cache
+          sudo apt-get autoremove -y
+          sudo apt-get autoclean
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf /usr/local/graalvm/
+          sudo rm -rf /usr/local/.ghcup/
+          sudo rm -rf /usr/local/share/powershell
+          sudo rm -rf /usr/local/share/chromium
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /usr/local/lib/node_modules
+          # Clean Docker system
+          docker system prune -af --volumes
+          echo "Disk space after cleanup:"
+          df -h
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -68,6 +99,21 @@ jobs:
             BUILDKIT_INLINE_CACHE=1
           network: host
         timeout-minutes: 60
+
+      - name: Check disk space after build
+        if: always()
+        run: |
+          echo "Disk space after build:"
+          df -h
+          echo "Docker system usage:"
+          docker system df
+
+      - name: Clean up build artifacts
+        if: always()
+        run: |
+          # Clean up Docker build cache and unused images
+          docker image prune -af
+          docker builder prune -af --keep-storage 2GB
 
       - name: Test image
         if: github.event_name == 'pull_request'
