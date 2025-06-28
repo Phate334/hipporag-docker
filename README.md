@@ -2,6 +2,29 @@
 
 This project provides a containerized environment for running HippoRAG, leveraging LiteLLM and llama.cpp server to offer a local, OpenAI API-compatible interface. By using Docker containers, you can easily deploy and manage HippoRAG alongside a local LLM backend, enabling efficient and flexible experimentation or development without relying on external APIs.
 
+## Container Images
+
+Container images are automatically built and published to GitHub Container Registry (ghcr.io) via GitHub Actions.
+
+### Available Images
+
+- `ghcr.io/phate334/hipporag-docker:latest` - Latest build from main branch
+- `ghcr.io/phate334/hipporag-docker:main` - Main branch builds
+- `ghcr.io/phate334/hipporag-docker:v*` - Tagged releases
+
+### Using Pre-built Images
+
+Instead of building the image locally, you can use the pre-built images:
+
+```bash
+# Pull the latest image
+docker pull ghcr.io/phate334/hipporag-docker:latest
+
+# Update compose.yaml to use the pre-built image
+# Replace the build context with:
+# image: ghcr.io/phate334/hipporag-docker:latest
+```
+
 ## Usage
 
 - build the Docker image
