@@ -65,6 +65,14 @@ jobs:
           driver-opts: |
             network=host
 
+      - name: Extract hipporag version
+        id: hipporag-version
+        run: |
+          # Extract hipporag version from uv.lock file
+          HIPPORAG_VERSION=$(grep -A 2 'name = "hipporag"' uv.lock | grep 'version = ' | cut -d '"' -f 2)
+          echo "version=$HIPPORAG_VERSION" >> $GITHUB_OUTPUT
+          echo "Detected hipporag version: $HIPPORAG_VERSION"
+
       - name: Log in to Container Registry
         if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
@@ -79,11 +87,12 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
+            type=raw,value=${{ steps.hipporag-version.outputs.version }}
+            type=raw,value=latest,enable={{is_default_branch}}
             type=ref,event=branch
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-            type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5

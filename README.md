@@ -8,6 +8,7 @@ Container images are automatically built and published to GitHub Container Regis
 
 ### Available Images
 
+- `ghcr.io/phate334/hipporag-docker:2.0.0a3` - Image tagged with hipporag package version
 - `ghcr.io/phate334/hipporag-docker:latest` - Latest build from main branch
 - `ghcr.io/phate334/hipporag-docker:main` - Main branch builds
 - `ghcr.io/phate334/hipporag-docker:v*` - Tagged releases
@@ -17,12 +18,15 @@ Container images are automatically built and published to GitHub Container Regis
 Instead of building the image locally, you can use the pre-built images:
 
 ```bash
-# Pull the latest image
+# Pull the image tagged with hipporag version
+docker pull ghcr.io/phate334/hipporag-docker:2.0.0a3
+
+# Or pull the latest image
 docker pull ghcr.io/phate334/hipporag-docker:latest
 
 # Update compose.yaml to use the pre-built image
 # Replace the build context with:
-# image: ghcr.io/phate334/hipporag-docker:latest
+# image: ghcr.io/phate334/hipporag-docker:2.0.0a3
 ```
 
 ## Usage

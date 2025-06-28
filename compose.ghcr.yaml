@@ -45,8 +45,10 @@ services:
       timeout: 10s
       retries: 3
   app:
-    # Use pre-built image from GitHub Container Registry
-    image: ghcr.io/phate334/hipporag-docker:latest
+    # Use pre-built image from GitHub Container Registry tagged with hipporag version
+    image: ghcr.io/phate334/hipporag-docker:2.0.0a3
+    # Or use latest:
+    # image: ghcr.io/phate334/hipporag-docker:latest
     # Or build locally:
     # build: .
     depends_on:
